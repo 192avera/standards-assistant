@@ -43,15 +43,6 @@ Ask these after Batch 1 is answered:
 
 6. **What Python version does this project use?** (e.g. 3.12, 3.13)
 
-7. **What libraries are central to this project beyond the standard stack?**
-   Skip pydantic, pydantic-settings, requests, pytest — those are company standards. List any additional ones a developer would encounter immediately (e.g. FastAPI, Flask, SQLAlchemy, boto3, celery).
-
-8. **How do you run or start this service?**
-   The non-standard command (lint, format, and test commands come from the standards and are already known).
-
-9. **Describe the directory layout.**
-   A rough sketch is enough — which folders exist, what goes where. If the project is already in development and you are unsure, say so and I will inspect the directory.
-
 ---
 
 ## Post-Interview Setup Steps
@@ -163,7 +154,6 @@ Once both batches are answered and setup steps are complete, write `.claude/cont
 - Dependency manager: uv (company standard)
 - Test framework: pytest (company standard)
 - Validation / config: pydantic, pydantic-settings (company standard)
-- Additional libraries: <question 7, or "None beyond company standards">
 
 ## Commands
 
@@ -172,13 +162,6 @@ uv run ruff check .           # lint
 uv run ruff format .          # format
 uv run ruff format . --check  # format check (CI)
 uv run pytest                 # run all tests
-<run command from question 8>
-\`\`\`
-
-## Layout
-
-\`\`\`
-<answer to question 9>
 \`\`\`
 
 ## Project Tracking
