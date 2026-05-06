@@ -1,0 +1,15 @@
+# Test scaffolding — not part of the distributed workflow
+src/
+tests/
+pyproject.toml
+uv.lock
+.python-version
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+
+# Per-project generated files — never committed to the standards repo
+.claude/context/project_context.md
+.claude/.standards_version
