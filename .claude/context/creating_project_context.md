@@ -62,23 +62,36 @@ After both batches are answered, run these setup steps **before** writing projec
 
 The Documentator agent requires the Atlassian MCP to interact with Jira and Confluence.
 
-Check whether the MCP is already connected by attempting to list available MCP tools. If the `atlassian` MCP is available, proceed silently.
+**Step A.1 — Check settings.json**
 
-If it is **not** connected, tell the user:
+Read `.claude/settings.json` and check if the `atlassian` entry exists under `mcpServers`.
 
-> "The Documentator agent needs the Atlassian MCP to manage Jira tickets and Confluence pages. You need to connect it once — it uses OAuth so no tokens to manage.
->
-> **Setup (30 seconds):**
-> 1. Type `/mcp` in Claude Code
-> 2. Select **Add Server**
-> 3. Enter URL: `https://mcp.atlassian.com/v1/sse`
-> 4. Complete the browser OAuth flow with your Atlassian account
->
-> Once done, let me know and I'll continue."
->
-> Wait for the user to confirm before proceeding.
+If it is **missing**, add it:
 
-Record MCP status in the output as `connected` or `not connected — user notified`.
+```json
+"mcpServers": {
+  "atlassian": {
+    "type": "sse",
+    "url": "https://mcp.atlassian.com/v1/sse"
+  }
+}
+```
+
+Then tell the user:
+
+> "I've added the Atlassian MCP server to `.claude/settings.json`. **Please restart Claude Code now** for it to take effect. After restarting, type `/mcp` to authenticate with your Atlassian account (OAuth — no tokens to copy). Come back and say 'continue' when done."
+
+Wait for the user to confirm before proceeding. Record status as `server added — pending restart and authentication`.
+
+**Step A.2 — If already in settings.json**
+
+Try to use an Atlassian MCP tool (e.g. list Confluence spaces). If it works, proceed silently. Record status as `connected`.
+
+If the tool call fails, the server is registered but not yet authenticated. Tell the user:
+
+> "The Atlassian MCP server is configured but not authenticated yet. Type `/mcp` in Claude Code to authenticate with your Atlassian account. If the server doesn't appear, restart Claude Code first. Come back and say 'continue' when done."
+
+Wait for the user to confirm. Record status as `server configured — pending authentication`.
 
 ### Step B — Bitbucket Git Setup
 
