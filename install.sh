@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
-# install.sh — Install or update the company standards assistant in a target project.
+# install.sh — Install or update the company standards assistant in a project.
 #
 # Usage:
-#   ./install.sh <target-project-path>
+#   ./install.sh              — installs into the current directory
+#   ./install.sh <path>       — installs into the specified directory
 #
 # What it does:
 #   - Clones the latest master of the standards repo (shallow, fast)
@@ -16,17 +17,8 @@ set -euo pipefail
 
 STANDARDS_REPO="https://github.com/192avera/standards-assistant.git"
 
-TARGET="${1:-}"
-
-if [[ -z "$TARGET" ]]; then
-  echo "Usage: ./install.sh <target-project-path>"
-  exit 1
-fi
-
-if [[ ! -d "$TARGET" ]]; then
-  echo "Error: target directory '$TARGET' does not exist."
-  exit 1
-fi
+# Default to current directory if no argument given; resolve to absolute path
+TARGET=$(cd "${1:-.}" && pwd)
 
 echo "Installing standards assistant into: $TARGET"
 
