@@ -54,6 +54,59 @@ Ask these after Batch 1 is answered:
 
 ---
 
+## Post-Interview Setup Steps
+
+After both batches are answered, run these setup steps **before** writing project_context.md.
+
+### Step A — Atlassian MCP Check
+
+The Documentator agent requires the Atlassian MCP to interact with Jira and Confluence.
+
+Check whether the MCP is already connected by attempting to list available MCP tools. If the `atlassian` MCP is available, proceed silently.
+
+If it is **not** connected, tell the user:
+
+> "The Documentator agent needs the Atlassian MCP to manage Jira tickets and Confluence pages. You need to connect it once — it uses OAuth so no tokens to manage.
+>
+> **Setup (30 seconds):**
+> 1. Type `/mcp` in Claude Code
+> 2. Select **Add Server**
+> 3. Enter URL: `https://mcp.atlassian.com/v1/sse`
+> 4. Complete the browser OAuth flow with your Atlassian account
+>
+> Once done, let me know and I'll continue."
+>
+> Wait for the user to confirm before proceeding.
+
+Record MCP status in the output as `connected` or `not connected — user notified`.
+
+### Step B — Bitbucket Git Setup
+
+After getting the Bitbucket repo answer (question 4):
+
+**If repo URL was provided:**
+1. Check if git is already initialized: run `git status`
+2. If not initialized: run `git init`
+3. Check if a remote named `origin` already exists: run `git remote -v`
+4. If no `origin`: run `git remote add origin <url>`
+5. Verify SSH access: run `ssh -T git@bitbucket.org`
+   - If it fails, tell the user:
+     > "Your SSH key is not authorized for Bitbucket. Add your public key to Bitbucket:
+     > 1. Go to Bitbucket → Personal Settings → SSH Keys
+     > 2. Add this key:
+     > ```
+     > <contents of ~/.ssh/id_ed25519.pub or ~/.ssh/id_rsa.pub>
+     > ```
+     > Then run `ssh -T git@bitbucket.org` to verify."
+   - Wait for confirmation before continuing.
+6. Record git status as `configured — origin set to <url>` or `pending SSH key setup`.
+
+**If "to be created":**
+- Run `git init` if not already initialized.
+- Record as `repository to be created — git initialized locally`.
+
+---
+
 ## Behavioral Rules Based on Answers
 
 **If "already in development" (question 2):**
@@ -70,19 +123,15 @@ Ask these after Batch 1 is answered:
 - Use this key in all commit message and PR title suggestions.
 - Format: `KEY-<number> <type>: <description>`
 
-**Bitbucket repo (question 4):**
-- Reference the repo URL in PR and git workflow guidance.
-- If not yet created, note it in the context and remind the user to set it up before the first commit.
-
 **Confluence space (question 5):**
-- Reference this space when suggesting documentation.
+- Reference this space when the Documentator creates or updates pages.
 - Architecture decisions, feature overviews, and API docs should point here.
 
 ---
 
 ## Output Format
 
-Once both batches are answered, write `.claude/context/project_context.md` using this structure:
+Once both batches are answered and setup steps are complete, write `.claude/context/project_context.md` using this structure:
 
 ```markdown
 # Project Context
@@ -122,8 +171,16 @@ uv run pytest                 # run all tests
 ## Project Tracking
 
 - Jira project key: `<question 3>` — all commits and PRs must include the ticket ID
-- Bitbucket repo: <question 4>
 - Confluence space: <question 5>
+
+## Source Control
+
+- Bitbucket repo: <question 4 URL or "to be created">
+- Git status: <result of Step B — "configured", "pending SSH key setup", or "repository to be created — git initialized locally">
+
+## Integrations
+
+- Atlassian MCP: <result of Step A — "connected" or "not connected — user notified">
 
 ## Project-Specific Constraints
 

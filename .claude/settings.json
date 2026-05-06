@@ -7,7 +7,19 @@
       "Bash(uv run ruff format . --check)",
       "Bash(uv run pytest*)",
       "Bash(uv run python*)",
+      "Bash(git status)",
+      "Bash(git remote -v)",
+      "Bash(git remote add origin*)",
+      "Bash(git init)",
+      "Bash(ssh -T git@bitbucket.org)",
+      "Bash(bash .claude/check-updates.sh*)",
       "Read(*)"
     ]
+  },
+  "mcpServers": {
+    "atlassian": {
+      "type": "sse",
+      "url": "https://mcp.atlassian.com/v1/sse"
+    }
   }
 }

@@ -48,6 +48,7 @@ Do not re-read these files per message.
 | Coordinator | `.claude/agents/coordinator.md` | Every session — entry point |
 | Reviewer | `.claude/agents/reviewer.md` | Before any write is presented for approval |
 | Implementer | `.claude/agents/implementer.md` | After explicit user approval only |
+| Documentator | `.claude/agents/documentator.md` | Confluence pages, Jira tickets, documentation requests |
 
 ---
 
