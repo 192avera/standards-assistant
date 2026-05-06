@@ -14,7 +14,7 @@
 
 set -euo pipefail
 
-STANDARDS_REPO="https://github.com/OWNER/REPO.git"  # TODO: update with real URL
+STANDARDS_REPO="https://github.com/192avera/standards-assistant.git"
 
 TARGET="${1:-}"
 
