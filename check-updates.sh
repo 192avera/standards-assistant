@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# check-updates.sh — Check whether the installed standards are current, or update them. (v2)
+# check-updates.sh — Check whether the installed standards are current, or update them. (v3)
 #
 # This script lives in .claude/ after install. Run it from your project root:
 #   bash .claude/check-updates.sh           — check only
