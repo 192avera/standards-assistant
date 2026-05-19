@@ -35,6 +35,7 @@ SHORT=$(echo "$COMMIT" | cut -c1-8)
 # Ensure .claude subdirectories exist in target
 mkdir -p "$TARGET/.claude/agents"
 mkdir -p "$TARGET/.claude/context"
+mkdir -p "$TARGET/.claude/commands"
 
 # Copy workflow files
 cp "$TMP/standards/CLAUDE.md"                                        "$TARGET/CLAUDE.md"
@@ -46,6 +47,7 @@ cp "$TMP/standards/.claude/context/standards.md"                     "$TARGET/.c
 cp "$TMP/standards/.claude/context/creating_project_context.md"      "$TARGET/.claude/context/creating_project_context.md"
 cp "$TMP/standards/.claude/agents/documentator.md"                   "$TARGET/.claude/agents/documentator.md"
 cp "$TMP/standards/check-updates.sh"                                  "$TARGET/.claude/check-updates.sh"
+cp "$TMP/standards/.claude/commands/pre-pr-check.md"                 "$TARGET/.claude/commands/pre-pr-check.md"
 chmod +x "$TARGET/.claude/check-updates.sh"
 
 # Record installed version — never overwrite project_context.md
