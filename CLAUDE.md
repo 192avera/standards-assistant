@@ -26,7 +26,7 @@ On session start, run this sequence once:
    - **If it does not exist:** read `.claude/context/creating_project_context.md` and run the project context interview before doing anything else. Write the resulting `project_context.md` to `.claude/context/project_context.md`, then proceed normally.
 3. If `.claude/.standards_version` exists, run `bash .claude/check-updates.sh`.
    - If it exits with code 2 (update available), surface this to the user before proceeding:
-     > "Standards update available — your installed version is behind the latest. Run `install.sh` from the standards repo to update."
+     > "Standards update available — your installed version is behind the latest. Run `bash .claude/check-updates.sh --update` to update."
    - If it exits 0 (up to date) or the file does not exist, proceed silently.
 
 Do not re-read these files per message.
