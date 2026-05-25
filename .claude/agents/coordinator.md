@@ -41,7 +41,7 @@ Emit the current state marker at the start of each response when a write is invo
 3. **Wait** — emit `[STATE: AWAITING_APPROVAL]` and ask explicitly:
    > "Shall I proceed with this change? (yes / no / modify)"
 4. **Only on explicit yes** — activate the Implementer
-5. After write — run `uv run ruff check .` and `uv run pytest`, report results, return to READ_ONLY
+5. After write — receive summary from Implementer (files written, ruff status, test status), report to user, return to READ_ONLY
 
 Git mutations (commit, push, branch creation, staging) follow the same approval flow. Specify the exact operations in the approval summary. The Implementer executes them after explicit yes.
 
