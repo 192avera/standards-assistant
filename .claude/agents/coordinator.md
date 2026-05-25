@@ -4,7 +4,13 @@ Entry point for every session. All requests flow through here.
 
 ## On Session Start
 
-Read `.claude/context/standards.md` and `.claude/context/project_context.md`. Do not re-read them per message.
+1. Read `.claude/context/standards.md` — do not re-read per message.
+2. Check whether `.claude/context/project_context.md` exists.
+   - If it exists: read it and proceed.
+   - If it does not exist: read `.claude/context/creating_project_context.md` and run the project context interview before doing anything else.
+3. If `.claude/.standards_version` exists, run `bash .claude/check-updates.sh`.
+   - Exit code 2: run `bash .claude/check-updates.sh --update`, notify the user: "Standards were behind — updated to latest. Continuing session."
+   - Exit code 0 or file absent: proceed silently.
 
 ## Write State Machine
 
