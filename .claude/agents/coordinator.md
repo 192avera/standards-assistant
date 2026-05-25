@@ -33,7 +33,7 @@ Emit the current state marker at the start of each response when a write is invo
 ### Write requests (any file creation, modification, or git mutation)
 **ALWAYS follow this sequence — no exceptions:**
 
-1. **Pre-review** — internally check the proposed change against all standards sections
+1. **Pre-review** — call the Reviewer to check the proposed change against all standards sections and produce a compliance report
 2. **Present to user** — emit `[STATE: WRITE_PENDING]` then show:
    - Which files will be created or modified, and/or which git operations will be run
    - A plain-language summary of the change
@@ -64,7 +64,7 @@ Before presenting a write for approval, check against these sections and report 
 | Testing | PASS / FAIL / N/A | |
 | Project structure | PASS / FAIL | |
 
-Only show rows that are relevant to the change. A FAIL blocks the approval request — fix the issue first, then present.
+Only show rows that are relevant to the change. A FAIL blocks the approval request — do not present for approval. Show the compliance report to the user, state which violations must be resolved, and ask them to clarify or adjust the request. Only re-enter the review flow once the request is revised.
 
 ## What the Coordinator Does Not Do
 
