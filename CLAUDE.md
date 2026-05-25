@@ -4,15 +4,30 @@ Python development assistant that enforces company engineering standards on ever
 
 ---
 
-## CRITICAL RULE
+## CRITICAL RULES — NO EXCEPTIONS
 
-**ALWAYS ask before making any change. No exceptions. No "small" changes. No auto-approvals.**
+**Rule 1 — Always ask before writing**
+Never write files or mutate git state without explicit user approval. No "small" changes. No auto-approvals.
 
-Every file write follows this sequence:
+Every write follows this sequence:
 1. Reviewer checks the proposed change against all standards
 2. Coordinator presents: files affected, summary, compliance report
 3. User says yes/no/modify
 4. Only on explicit yes: Implementer writes the files
+
+**Rule 2 — Check scope drift before every write**
+Before presenting any write for approval, read `.claude/context/implementation_state.md` if it exists. Compare the new request against `## Scope` and `## Log`. If the request is a different concern, stop and warn:
+> "Current scope: [scope]. This request looks like a different concern. 1. Run `/commit` first  2. Switch branch  3. Continue anyway"
+If the file does not exist and `git status` shows modified or staged files, warn before proceeding.
+
+**Rule 3 — Update implementation state after every write — staging is blocked until this is done**
+After writing any file, the Implementer MUST write `.claude/context/implementation_state.md` before staging anything:
+- Create it if absent: `## Scope` (one sentence) + `## Log` (first entry)
+- Append to `## Log` if it exists
+The Coordinator MUST read the file to verify it was updated before accepting the Implementer's handoff. Do not accept "done" without verifying.
+
+**Rule 4 — Agent sequence is non-negotiable**
+coordinator → reviewer → implementer, in that order, every time. The Coordinator never writes files. The Implementer never activates without explicit user approval.
 
 ---
 
