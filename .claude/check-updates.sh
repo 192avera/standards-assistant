@@ -79,7 +79,12 @@ cp "$TMP/standards/.claude/context/standards.md"                     "$TARGET/.c
 cp "$TMP/standards/.claude/context/creating_project_context.md"      "$TARGET/.claude/context/creating_project_context.md"
 cp "$TMP/standards/.claude/check-updates.sh"                           "$TARGET/.claude/check-updates.sh"
 cp "$TMP/standards/.claude/commands/pre-pr-check.md"                 "$TARGET/.claude/commands/pre-pr-check.md"
+cp "$TMP/standards/.claude/commands/commit.md"                        "$TARGET/.claude/commands/commit.md"
+cp "$TMP/standards/.claude/commands/pr.md"                            "$TARGET/.claude/commands/pr.md"
 chmod +x "$TARGET/.claude/check-updates.sh"
+
+# Always update .claudeignore.example; never touch .claudeignore
+cp "$TMP/standards/.claudeignore.example"                             "$TARGET/.claudeignore.example"
 
 echo "$COMMIT" > "$TARGET/.claude/.standards_version"
 
@@ -87,3 +92,4 @@ echo "Standards updated to $SHORT."
 if [[ -f "$TARGET/.claude/context/project_context.md" ]]; then
   echo "project_context.md was preserved."
 fi
+echo ".claudeignore.example updated — diff against your .claudeignore to adopt new entries."

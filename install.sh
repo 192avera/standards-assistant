@@ -10,6 +10,7 @@
 #   - Copies CLAUDE.md and .claude/ workflow files into the target project
 #   - Records the installed commit hash in .claude/.standards_version
 #   - Never overwrites .claude/context/project_context.md
+#   - Copies .claudeignore.example; creates .claudeignore from it only if one does not exist
 #
 # Run this script again at any time to update to the latest standards.
 
@@ -48,7 +49,15 @@ cp "$TMP/standards/.claude/context/creating_project_context.md"      "$TARGET/.c
 cp "$TMP/standards/.claude/agents/documentator.md"                   "$TARGET/.claude/agents/documentator.md"
 cp "$TMP/standards/.claude/check-updates.sh"                           "$TARGET/.claude/check-updates.sh"
 cp "$TMP/standards/.claude/commands/pre-pr-check.md"                 "$TARGET/.claude/commands/pre-pr-check.md"
+cp "$TMP/standards/.claude/commands/commit.md"                        "$TARGET/.claude/commands/commit.md"
+cp "$TMP/standards/.claude/commands/pr.md"                            "$TARGET/.claude/commands/pr.md"
 chmod +x "$TARGET/.claude/check-updates.sh"
+
+# Copy .claudeignore.example always; create .claudeignore only if absent
+cp "$TMP/standards/.claudeignore.example"                             "$TARGET/.claudeignore.example"
+if [[ ! -f "$TARGET/.claudeignore" ]]; then
+  cp "$TMP/standards/.claudeignore.example"                           "$TARGET/.claudeignore"
+fi
 
 # Record installed version — never overwrite project_context.md
 echo "$COMMIT" > "$TARGET/.claude/.standards_version"
@@ -60,6 +69,10 @@ if [[ -f "$TARGET/.claude/context/project_context.md" ]]; then
   echo "Existing project_context.md was preserved."
 else
   echo "No project_context.md found — the assistant will run the setup interview on first session start."
+fi
+
+if [[ -f "$TARGET/.claudeignore" ]]; then
+  echo "Existing .claudeignore was preserved. See .claudeignore.example for any new additions."
 fi
 
 echo ""

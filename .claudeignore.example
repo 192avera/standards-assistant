@@ -1,0 +1,38 @@
+# .claudeignore — tells Claude Code which files to exclude from context.
+# Copy this file to .claudeignore and customize for your project.
+# This file is updated by check-updates.sh; your .claudeignore is never touched.
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Test and lint cache
+.pytest_cache/
+.ruff_cache/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Build artifacts
+dist/
+build/
+*.egg-info/
+
+# Coverage
+.coverage
+htmlcov/
+
+# Logs
+*.log
+logs/
+
+# Dependency lockfile
+uv.lock
+
+# OS files
+.DS_Store
+Thumbs.db
