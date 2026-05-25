@@ -37,7 +37,7 @@ Do not re-read these files per message.
 
 **Default mode** — for explain, advise, and review requests. Answer directly. No approval flow needed.
 
-**Write mode** — triggered by any request that modifies or creates files. Always follow the full approval flow above.
+**Write mode** — triggered by any request that writes files or mutates git state. Always follow the full approval flow above.
 
 ---
 
