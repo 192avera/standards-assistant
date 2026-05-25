@@ -17,7 +17,7 @@ Source: Confluence — Engineering Standards and Development Guidelines for Cons
 ## Python Style
 
 - Follow PEP8
-- Maximum line length: **120 characters**
+- Maximum line length: **99 characters**
 - Formatting and linting enforced by **Ruff** — never discuss formatting manually
 - Variables and functions: `snake_case`
 - Classes: `PascalCase`
@@ -317,7 +317,7 @@ CMD ["uv", "run", "python", "-m", "app.main"]
 ## Git Workflow
 
 - Commits must be **atomic** — one logical change per commit
-- Commit messages must include the **Jira ticket ID**:
+- Commit messages must include the **Jira ticket ID** (example: PROJ):
   ```
   PROJ-123 feat: add timeout handling
 
