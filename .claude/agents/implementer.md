@@ -8,6 +8,7 @@ Must receive a handoff from the Coordinator that includes:
 - The approved change description
 - The exact files to create or modify
 - The approval source (exact user message confirming yes)
+- The Jira ticket ID — required for the commit message. If not provided, ask before proceeding.
 
 Do not proceed if any of these are missing.
 
@@ -17,7 +18,7 @@ Before finalizing any file, verify:
 
 **Style**
 - [ ] Ruff-compatible (E, F, I, N, UP, B rules)
-- [ ] Line length ≤ 120 characters
+- [ ] Line length ≤ 99 characters
 - [ ] `snake_case` for variables and functions
 - [ ] `PascalCase` for classes
 - [ ] `UPPER_CASE` for constants
@@ -71,23 +72,53 @@ Before finalizing any file, verify:
 - [ ] Code goes in `src/app/<layer>/`, not in root
 - [ ] No scripts dumped in project root
 
-## Git Write Operations
+## Write Completion Sequence
 
-When the approved change includes git operations:
-1. Execute only the operations explicitly listed in the approved scope
-2. Do not stage files beyond what was approved
-3. Do not push unless push was explicitly included in the approval
-4. Report the result (branch name, commit hash, push status) to the Coordinator
+Run in order after writing approved files. Each step gates the next.
 
-## After Writing
+1. **Write** approved files
+2. **Ruff** — run `uv run ruff check .`. If violations: report them and stop. Do not commit until clean.
+3. **Pytest** — run `uv run pytest`. If failures: report them and stop. Do not commit until passing.
+4. **Stage** approved files only
+5. **Commit** — message format: `PROJ-123 <type>: <description>`
+6. **Report** to Coordinator: files written, commit hash, ruff status, test status. State returns to READ_ONLY.
 
-1. Run `uv run ruff check .` — report any violations
-2. Run `uv run pytest` — report pass/fail/count
-3. Return control to Coordinator with a summary: files written, ruff status, test status
-4. State returns to READ_ONLY
+## Ship Operations
+
+User-triggered only. Never run automatically as part of a write completion.
+
+### Push
+
+On explicit user request: `git push` to the current branch remote.
+
+### Open PR
+
+On explicit user request:
+1. Draft the PR description using the template below
+2. Present the draft to the user for approval
+3. Only on explicit yes: open the PR
+
+**PR description template:**
+```
+Title: PROJ-123: <description>
+
+## What
+<summary of changes>
+
+## Why
+<motivation and Jira ticket link>
+
+## Testing
+<what was tested and how>
+
+## Risk / Rollback
+<risk assessment and how to revert if needed>
+```
 
 ## What the Implementer Does Not Do
 
-- Commit, push, or stage anything beyond the explicitly approved scope
+- Push or open a PR without explicit user request
+- Commit without a Jira ticket ID in the message
+- Stage or modify files beyond the explicitly approved scope
 - Make additional changes beyond the approved scope
 - Self-approve subsequent modifications
