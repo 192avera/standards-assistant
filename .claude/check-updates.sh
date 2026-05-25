@@ -77,7 +77,7 @@ cp "$TMP/standards/.claude/agents/reviewer.md"                       "$TARGET/.c
 cp "$TMP/standards/.claude/agents/documentator.md"                   "$TARGET/.claude/agents/documentator.md"
 cp "$TMP/standards/.claude/context/standards.md"                     "$TARGET/.claude/context/standards.md"
 cp "$TMP/standards/.claude/context/creating_project_context.md"      "$TARGET/.claude/context/creating_project_context.md"
-cp "$TMP/standards/check-updates.sh"                                  "$TARGET/.claude/check-updates.sh"
+cp "$TMP/standards/.claude/check-updates.sh"                           "$TARGET/.claude/check-updates.sh"
 cp "$TMP/standards/.claude/commands/pre-pr-check.md"                 "$TARGET/.claude/commands/pre-pr-check.md"
 chmod +x "$TARGET/.claude/check-updates.sh"
 
