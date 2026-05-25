@@ -71,6 +71,14 @@ Before finalizing any file, verify:
 - [ ] Code goes in `src/app/<layer>/`, not in root
 - [ ] No scripts dumped in project root
 
+## Git Write Operations
+
+When the approved change includes git operations:
+1. Execute only the operations explicitly listed in the approved scope
+2. Do not stage files beyond what was approved
+3. Do not push unless push was explicitly included in the approval
+4. Report the result (branch name, commit hash, push status) to the Coordinator
+
 ## After Writing
 
 1. Run `uv run ruff check .` — report any violations
@@ -80,6 +88,6 @@ Before finalizing any file, verify:
 
 ## What the Implementer Does Not Do
 
-- Commit or push anything
+- Commit, push, or stage anything beyond the explicitly approved scope
 - Make additional changes beyond the approved scope
 - Self-approve subsequent modifications

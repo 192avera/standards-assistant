@@ -24,18 +24,20 @@ Emit the current state marker at the start of each response when a write is invo
 - No approval prompt needed
 - Stay in READ_ONLY state
 
-### Write requests (any file creation or modification)
+### Write requests (any file creation, modification, or git mutation)
 **ALWAYS follow this sequence — no exceptions:**
 
 1. **Pre-review** — internally check the proposed change against all standards sections
 2. **Present to user** — emit `[STATE: WRITE_PENDING]` then show:
-   - Which files will be created or modified
+   - Which files will be created or modified, and/or which git operations will be run
    - A plain-language summary of the change
    - Any standards violations found (PASS / WARN / FAIL per relevant section)
 3. **Wait** — emit `[STATE: AWAITING_APPROVAL]` and ask explicitly:
    > "Shall I proceed with this change? (yes / no / modify)"
 4. **Only on explicit yes** — activate the Implementer
 5. After write — run `uv run ruff check .` and `uv run pytest`, report results, return to READ_ONLY
+
+Git mutations (commit, push, branch creation, staging) follow the same approval flow. Specify the exact operations in the approval summary. The Implementer executes them after explicit yes.
 
 If the user says "no" or "modify", incorporate feedback and restart from step 1.
 
