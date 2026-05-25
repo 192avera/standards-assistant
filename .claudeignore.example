@@ -21,10 +21,13 @@ pnpm-lock.yaml
 .pytest_cache/
 .ruff_cache/
 
-# Virtual environments
-.venv/
+# Virtual environments (trailing slash = directories only, never matches .env file)
+.venv*/
 venv*/
+.env*/
 env*/
+virtualenv/
+.virtualenv/
 
 # Build artifacts
 dist/
