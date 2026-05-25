@@ -13,8 +13,8 @@ Check whether `.claude/context/implementation_state.md` exists and is current:
 2. Run `git status` and `git branch --show-current`
 3. Compare: does the branch in the state file match the current branch? Do the files in the state file roughly match what `git status` shows as staged/modified?
 
-**Path A — State file is current** (file exists, branch matches, files match):
-Use `implementation_state.md` as the primary source for commit message and file list.
+**Path A — State file is current** (file exists, branch matches):
+Use `implementation_state.md` as the primary source for commit message context.
 
 **Path B — No state file or stale** (file absent, branch mismatch, or significant discrepancy):
 Fall back to git as source of truth:
@@ -36,7 +36,7 @@ Stop.
 
 ## Step 3 — Jira ticket
 
-**Path A:** read from `implementation_state.md` → `## Jira Ticket`.
+**Path A:** ask the user for the Jira ticket — the state file no longer tracks it.
 **Path B:** check recent `git log` for a ticket pattern `[A-Z]+-[0-9]+` on the current branch.
 
 If ticket is "not set" or not found in either path, ask:
@@ -52,7 +52,7 @@ Format: `PROJ-123 <type>: <description>`
 
 Types: `feat`, `fix`, `refactor`, `test`, `chore`, `docs`
 
-**Path A:** derive type and description from `## Summary` in the state file.
+**Path A:** derive type and description from `## Log` in the state file.
 **Path B:** derive from `git diff --staged` content.
 
 Keep the description concise (under 72 characters after the ticket prefix).
@@ -93,8 +93,7 @@ Report the commit hash to the user.
 ## Step 7 — Reset implementation state (Path A only)
 
 If using Path A, update `implementation_state.md`:
-- Clear the `## Uncommitted Changes` table
-- Set `## Change Count` to 0
-- Append a line to `## Summary`: `Committed: <hash> — <message>`
+- Clear all entries under `## Log`
+- Keep the `## Scope` line unchanged
 
-Do not delete the file — keep Current Scope, Jira Ticket, and Branch for the next cycle.
+Do not delete the file — the scope is still active. The log is cleared so the next cycle of writes starts fresh within the same scope.

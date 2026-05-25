@@ -78,46 +78,43 @@ Run in order after writing approved files. Each step gates the next.
 1. **Write** approved files
 2. **Ruff** — run `uv run ruff check .`. If violations: report and stop. Do not stage until clean.
 3. **Pytest** — run `uv run pytest`. If failures: report and stop. Do not stage until passing.
-4. **Stage** — run `git status`, cross-reference against `implementation_state.md`:
-   - Stage only files listed in the state file
-   - If `git status` shows untracked or modified files not in the state file, report them without staging:
-     > "These files are not part of the current implementation — leaving them unstaged: [list]"
-5. **Update** `implementation_state.md` (see Implementation State File)
+4. **Stage** — stage the files that were just written. Run `git status` and report any untracked or modified files not part of this write without staging them:
+   > "These files are not part of the current implementation — leaving them unstaged: [list]"
+5. **Update** `implementation_state.md` (see Implementation State File) — this step is mandatory. Do not proceed to step 6 until the file is written.
 6. **Report** to Coordinator: files written, ruff status, test status. State returns to READ_ONLY.
 
 ## Implementation State File
 
 **Location:** `.claude/context/implementation_state.md`
 
+**Purpose:** Single-purpose context savepoint. Gives the Coordinator enough information to detect scope drift and understand what was done earlier in the session. Nothing more.
+
 **Structure:**
 ```
-## Current Scope
-<description of what's being worked on — set on first write>
+## Scope
+<one sentence describing the current implementation theme — set on first write, never changed mid-scope>
 
-## Jira Ticket
-<ticket key or "not set">
+## Log
+- <plain English summary of what was done — one or two lines per write, appended after each>
+- <next entry>
+```
 
-## Branch
-<current branch name>
+**Example:**
+```
+## Scope
+Add static rollover animation — steady-state SSF model, front-view schematic, HTML output.
 
-## Layers Touched
-<comma-separated: api, services, models, utils, repositories, tasks, etc.>
-
-## Uncommitted Changes
-| File | Change Type | Summary |
-|------|-------------|---------|
-
-## Change Count
-<integer>
-
-## Summary
-<narrative of all changes since last commit>
+## Log
+- Added RolloverAnimationService with Plotly frame builder and vehicle geometry renderer
+- Added main_animate entry point and AnimationSettings config extension
+- Added tests for animation service geometry and file output
 ```
 
 **Lifecycle:**
-- **Created** — on first write when the file does not exist or Change Count is 0
-- **Updated** — after every write: append new files to the table, update Layers Touched, increment Change Count, append to Summary
-- **Reset** — after `/commit`: clear Uncommitted Changes table, set Change Count to 0. Keep Current Scope, Jira Ticket, and Branch.
+- **Created** — on first write when the file does not exist
+- **Updated** — after every write: append one or two lines to `## Log` describing what was done
+- **Log cleared** — after `/commit` within the same scope: clear the Log entries, keep the Scope line
+- **Deleted** — when the user confirms a scope change and the previous work is committed or abandoned. Delete the file entirely so the next write starts fresh.
 
 ## Ship Operations
 

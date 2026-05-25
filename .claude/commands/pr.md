@@ -41,7 +41,7 @@ If there are **commits not yet pushed**, note this — the push will happen in S
 
 ## Step 3 — Jira ticket
 
-**Path A:** read from `implementation_state.md` → `## Jira Ticket`.
+**Path A:** ask the user for the Jira ticket — the state file no longer tracks it.
 **Path B:** scan commit messages in range for `[A-Z]+-[0-9]+` pattern.
 
 If not found in either path, ask:
@@ -66,7 +66,7 @@ Wait for user choice before proceeding.
 
 **Title:** `PROJ-123: <concise description>` (under 70 characters)
 
-**Path A:** derive What and Why from `## Summary` in the state file.
+**Path A:** derive What and Why from `## Scope` and `## Log` in the state file.
 **Path B:** derive from commit messages and diff content.
 
 ```
@@ -123,5 +123,5 @@ On **yes**: proceed to Step 7.
 
 ## Step 8 — Update implementation state (Path A only)
 
-If using Path A, append to `## Summary` in `implementation_state.md`:
+If using Path A, append to `## Log` in `implementation_state.md`:
 `PR opened: <PR URL>`

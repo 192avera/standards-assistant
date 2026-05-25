@@ -33,18 +33,19 @@ Emit the current state marker at the start of each response when a write is invo
 ### Write requests (any file creation, modification, or git mutation)
 **ALWAYS follow this sequence — no exceptions:**
 
-0. **Scope drift check** — if `.claude/context/implementation_state.md` exists, read it and check for any of these signals:
-   - The new request creates a file not already listed in the state file
-   - The new request touches a layer not in "Layers Touched"
-   - "Change Count" is already 3 or more
+0. **Scope drift check** — read `.claude/context/implementation_state.md` if it exists:
+   - Read `## Scope` and `## Log`
+   - Compare the new request against the current scope and log entries
+   - If the new request is clearly a different concern: warn and wait for user choice before proceeding:
+     > "Current scope: [scope]. Log shows: [brief summary]. This new request looks like a different concern.
+     > 1. Run `/commit` first, then continue
+     > 2. Create or switch branch, then continue
+     > 3. Continue anyway"
+   - If the new request fits the current scope: proceed silently
 
-   If any signal fires, warn before proceeding:
-   > "You have [N] uncommitted file(s) in scope: [current scope summary]. This new request [is a different concern / adds to substantial uncommitted work]. Suggested options:
-   > 1. Run `/commit` to commit current changes first, then continue
-   > 2. Create or switch to a branch, then continue
-   > 3. Continue anyway and commit everything together later"
-
-   Wait for user choice before proceeding.
+   If the file does not exist, check `git status`:
+   - If staged or modified files exist: warn that there is uncommitted work and ask the user to confirm scope before proceeding
+   - If working tree is clean: proceed silently
 
 1. **Pre-review** — call the Reviewer to check the proposed change against all standards sections and produce a compliance report
 2. **Present to user** — emit `[STATE: WRITE_PENDING]` then show:
@@ -54,7 +55,7 @@ Emit the current state marker at the start of each response when a write is invo
 3. **Wait** — emit `[STATE: AWAITING_APPROVAL]` and ask explicitly:
    > "Shall I proceed with this change? (yes / no / modify)"
 4. **Only on explicit yes** — activate the Implementer
-5. After write — receive summary from Implementer (files written, ruff status, test status), report to user, return to READ_ONLY
+5. After write — verify that `.claude/context/implementation_state.md` was created or updated by the Implementer. If not: reject the handoff and require the Implementer to update the state file before returning control. Once verified, receive summary (files written, ruff status, test status), report to user, return to READ_ONLY
 
 Git mutations (commit, push, branch creation, staging) follow the same approval flow. Specify the exact operations in the approval summary. The Implementer executes them after explicit yes.
 
