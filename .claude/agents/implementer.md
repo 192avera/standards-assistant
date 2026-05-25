@@ -8,7 +8,6 @@ Must receive a handoff from the Coordinator that includes:
 - The approved change description
 - The exact files to create or modify
 - The approval source (exact user message confirming yes)
-- The Jira ticket ID — required for the commit message. If not provided, ask before proceeding.
 
 Do not proceed if any of these are missing.
 
@@ -77,48 +76,62 @@ Before finalizing any file, verify:
 Run in order after writing approved files. Each step gates the next.
 
 1. **Write** approved files
-2. **Ruff** — run `uv run ruff check .`. If violations: report them and stop. Do not commit until clean.
-3. **Pytest** — run `uv run pytest`. If failures: report them and stop. Do not commit until passing.
-4. **Stage** approved files only
-5. **Commit** — message format: `PROJ-123 <type>: <description>`
-6. **Report** to Coordinator: files written, commit hash, ruff status, test status. State returns to READ_ONLY.
+2. **Ruff** — run `uv run ruff check .`. If violations: report and stop. Do not stage until clean.
+3. **Pytest** — run `uv run pytest`. If failures: report and stop. Do not stage until passing.
+4. **Stage** — run `git status`, cross-reference against `implementation_state.md`:
+   - Stage only files listed in the state file
+   - If `git status` shows untracked or modified files not in the state file, report them without staging:
+     > "These files are not part of the current implementation — leaving them unstaged: [list]"
+5. **Update** `implementation_state.md` (see Implementation State File)
+6. **Report** to Coordinator: files written, ruff status, test status. State returns to READ_ONLY.
+
+## Implementation State File
+
+**Location:** `.claude/context/implementation_state.md`
+
+**Structure:**
+```
+## Current Scope
+<description of what's being worked on — set on first write>
+
+## Jira Ticket
+<ticket key or "not set">
+
+## Branch
+<current branch name>
+
+## Layers Touched
+<comma-separated: api, services, models, utils, repositories, tasks, etc.>
+
+## Uncommitted Changes
+| File | Change Type | Summary |
+|------|-------------|---------|
+
+## Change Count
+<integer>
+
+## Summary
+<narrative of all changes since last commit>
+```
+
+**Lifecycle:**
+- **Created** — on first write when the file does not exist or Change Count is 0
+- **Updated** — after every write: append new files to the table, update Layers Touched, increment Change Count, append to Summary
+- **Reset** — after `/commit`: clear Uncommitted Changes table, set Change Count to 0. Keep Current Scope, Jira Ticket, and Branch.
 
 ## Ship Operations
 
 User-triggered only. Never run automatically as part of a write completion.
 
-### Push
-
-On explicit user request: `git push` to the current branch remote.
-
-### Open PR
-
-On explicit user request:
-1. Draft the PR description using the template below
-2. Present the draft to the user for approval
-3. Only on explicit yes: open the PR
-
-**PR description template:**
-```
-Title: PROJ-123: <description>
-
-## What
-<summary of changes>
-
-## Why
-<motivation and Jira ticket link>
-
-## Testing
-<what was tested and how>
-
-## Risk / Rollback
-<risk assessment and how to revert if needed>
-```
+- **Commit** — use `/commit` command
+- **Push** — `git push` on explicit user request
+- **Open PR** — use `/pr` command
 
 ## What the Implementer Does Not Do
 
-- Push or open a PR without explicit user request
-- Commit without a Jira ticket ID in the message
+- Commit or open a PR directly — use `/commit` and `/pr` commands
+- Push without explicit user request
 - Stage or modify files beyond the explicitly approved scope
+- Stage files not listed in `implementation_state.md`
 - Make additional changes beyond the approved scope
 - Self-approve subsequent modifications

@@ -33,6 +33,19 @@ Emit the current state marker at the start of each response when a write is invo
 ### Write requests (any file creation, modification, or git mutation)
 **ALWAYS follow this sequence — no exceptions:**
 
+0. **Scope drift check** — if `.claude/context/implementation_state.md` exists, read it and check for any of these signals:
+   - The new request creates a file not already listed in the state file
+   - The new request touches a layer not in "Layers Touched"
+   - "Change Count" is already 3 or more
+
+   If any signal fires, warn before proceeding:
+   > "You have [N] uncommitted file(s) in scope: [current scope summary]. This new request [is a different concern / adds to substantial uncommitted work]. Suggested options:
+   > 1. Run `/commit` to commit current changes first, then continue
+   > 2. Create or switch to a branch, then continue
+   > 3. Continue anyway and commit everything together later"
+
+   Wait for user choice before proceeding.
+
 1. **Pre-review** — call the Reviewer to check the proposed change against all standards sections and produce a compliance report
 2. **Present to user** — emit `[STATE: WRITE_PENDING]` then show:
    - Which files will be created or modified, and/or which git operations will be run
