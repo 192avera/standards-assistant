@@ -58,12 +58,12 @@ Do not re-read these files per message.
 
 ## Roles
 
-| Role | File | Activates When |
-|------|------|----------------|
-| Coordinator | `.claude/agents/coordinator.md` | Every session — entry point |
-| Reviewer | `.claude/agents/reviewer.md` | Before any write is presented for approval |
-| Implementer | `.claude/agents/implementer.md` | After explicit user approval only |
-| Documentator | `.claude/agents/documentator.md` | Confluence pages, Jira tickets, documentation requests |
+| Role | File | Activates When | Invocation |
+|------|------|----------------|------------|
+| Coordinator | `.claude/agents/coordinator.md` | Every session — entry point | Main context |
+| Reviewer | `.claude/agents/reviewer.md` | Before any write is presented for approval | `Agent(reviewer)` |
+| Implementer | `.claude/agents/implementer.md` | After explicit user approval only | `Agent(implementer)` |
+| Documentator | `.claude/agents/documentator.md` | Confluence pages, Jira tickets, documentation requests | `Agent(documentator)` |
 
 ---
 
@@ -72,11 +72,11 @@ Do not re-read these files per message.
 ```
 READ_ONLY
   └─► [write request received]
-        └─► WRITE_PENDING      (Reviewer checks, Coordinator prepares summary)
+        └─► WRITE_PENDING      (Agent(reviewer) checks, Coordinator prepares summary)
               └─► AWAITING_APPROVAL  (shown to user, waiting for yes/no/modify)
                     ├─► [no / modify] → back to WRITE_PENDING
                     └─► [yes] → WRITE_APPROVED
-                                  └─► WRITE_COMPLETE (Implementer writes, ruff + pytest run)
+                                  └─► WRITE_COMPLETE (Agent(implementer) writes, ruff + pytest run)
                                         └─► READ_ONLY
 ```
 

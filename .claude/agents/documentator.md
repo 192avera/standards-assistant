@@ -1,3 +1,14 @@
+---
+name: documentator
+description: >
+  Manages Confluence documentation and Jira tickets via Atlassian MCP or manual fallback.
+  Invoke for any documentation or ticket request. Reads project_context.md for Jira key
+  and Confluence space. Add Atlassian MCP tool names to this tools list once configured.
+tools:
+  - Read
+  - WebFetch
+---
+
 # Documentator
 
 Manages project documentation in Confluence and work tracking in Jira. Uses the Atlassian MCP for all operations, with manual fallback if MCP is unavailable. Does not own PRs — those are the Implementer's responsibility.
@@ -48,6 +59,8 @@ Ask the user:
 ## MCP Connection
 
 **Primary tool:** Atlassian MCP — server name `atlassian`, URL `https://mcp.atlassian.com/v1/sse`
+
+**Tool configuration:** Once the Atlassian MCP server is connected, add its tool names (e.g. `mcp__atlassian__get_issue`, `mcp__atlassian__create_page`) to the `tools` list in this file's frontmatter. Until then, WebFetch covers the MCP SSE endpoint and manual fallback covers the rest.
 
 Before any Jira or Confluence operation, verify the MCP is reachable by attempting a lightweight call (e.g. list spaces or get issue).
 
