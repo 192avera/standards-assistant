@@ -11,7 +11,13 @@ set -euo pipefail
 
 STANDARDS_REPO="https://github.com/192avera/standards-assistant.git"
 VERSION_FILE=".claude/.standards_version"
+BRANCH_FILE=".claude/.standards_branch"
 UPDATE=false
+
+BRANCH="master"
+if [[ -f "$BRANCH_FILE" ]]; then
+  BRANCH=$(cat "$BRANCH_FILE")
+fi
 
 if [[ "${1:-}" == "--update" ]]; then
   UPDATE=true
@@ -27,7 +33,7 @@ LOCAL_SHORT=$(echo "$LOCAL" | cut -c1-8)
 
 echo "Checking for standards updates..."
 
-REMOTE=$(git ls-remote "$STANDARDS_REPO" HEAD 2>/dev/null | cut -f1)
+REMOTE=$(git ls-remote "$STANDARDS_REPO" "refs/heads/$BRANCH" 2>/dev/null | cut -f1)
 
 if [[ -z "$REMOTE" ]]; then
   echo "Could not reach the standards repository. Check your network or the repo URL."
@@ -43,6 +49,7 @@ fi
 
 echo ""
 echo "Standards update available."
+echo "  Branch    : $BRANCH"
 echo "  Installed : $LOCAL_SHORT"
 echo "  Latest    : $REMOTE_SHORT"
 echo ""
@@ -61,7 +68,7 @@ TARGET=$(pwd)
 TMP=$(mktemp -d)
 trap 'rm -rf "$TMP"' EXIT
 
-git clone --depth 1 --quiet "$STANDARDS_REPO" "$TMP/standards"
+git clone --depth 1 --branch "$BRANCH" --quiet "$STANDARDS_REPO" "$TMP/standards"
 COMMIT=$(git -C "$TMP/standards" rev-parse HEAD)
 SHORT=$(echo "$COMMIT" | cut -c1-8)
 

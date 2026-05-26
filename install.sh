@@ -2,8 +2,10 @@
 # install.sh — Install or update the company standards assistant in a project.
 #
 # Usage:
-#   ./install.sh              — installs into the current directory
-#   ./install.sh <path>       — installs into the specified directory
+#   ./install.sh                            — installs into the current directory
+#   ./install.sh <path>                     — installs into the specified directory
+#   ./install.sh <path> --branch <branch>   — installs from a specific branch
+#   ./install.sh --branch <branch>          — current directory, specific branch
 #
 # What it does:
 #   - Clones the latest master of the standards repo (shallow, fast)
@@ -18,8 +20,16 @@ set -euo pipefail
 
 STANDARDS_REPO="https://github.com/192avera/standards-assistant.git"
 
-# Default to current directory if no argument given; resolve to absolute path
-TARGET=$(cd "${1:-.}" && pwd)
+# Parse arguments — TARGET defaults to current directory, BRANCH defaults to master
+BRANCH="master"
+TARGET=""
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --branch|-b) BRANCH="$2"; shift 2 ;;
+    *) TARGET="$1"; shift ;;
+  esac
+done
+TARGET=$(cd "${TARGET:-.}" && pwd)
 
 echo "Installing standards assistant into: $TARGET"
 
@@ -28,7 +38,7 @@ TMP=$(mktemp -d)
 trap 'rm -rf "$TMP"' EXIT
 
 echo "Fetching latest standards..."
-git clone --depth 1 --quiet "$STANDARDS_REPO" "$TMP/standards"
+git clone --depth 1 --branch "$BRANCH" --quiet "$STANDARDS_REPO" "$TMP/standards"
 
 COMMIT=$(git -C "$TMP/standards" rev-parse HEAD)
 SHORT=$(echo "$COMMIT" | cut -c1-8)
@@ -59,8 +69,9 @@ if [[ ! -f "$TARGET/.claudeignore" ]]; then
   cp "$TMP/standards/.claudeignore.example"                           "$TARGET/.claudeignore"
 fi
 
-# Record installed version — never overwrite project_context.md
+# Record installed version and branch — never overwrite project_context.md
 echo "$COMMIT" > "$TARGET/.claude/.standards_version"
+echo "$BRANCH" > "$TARGET/.claude/.standards_branch"
 
 echo ""
 echo "Standards assistant installed at version $SHORT."
